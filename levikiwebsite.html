@@ -1,0 +1,1634 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>A1 Uniforms – Dress to Impress</title>
+  <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Outfit:wght@300;400;500;600;700&family=Playfair+Display:ital,wght@1,700&display=swap" rel="stylesheet"/>
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.2/css/bootstrap.min.css" rel="stylesheet"/>
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" rel="stylesheet"/>
+  <style>
+    :root {
+      --navy: #0a0f2e;
+      --gold: #d4a843;
+      --gold2: #f0c96e;
+      --white: #f5f5f0;
+      --glass: rgba(255,255,255,0.07);
+      --glass-border: rgba(212,168,67,0.25);
+      --accent: #1a2560;
+    }
+
+    *, *::before, *::after { margin:0; padding:0; box-sizing:border-box; }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      font-family: 'Outfit', sans-serif;
+      background: var(--navy);
+      color: var(--white);
+      overflow-x: hidden;
+      cursor: none;
+    }
+
+    /* ─── CUSTOM CURSOR ─── */
+    .cursor {
+      width: 18px; height: 18px;
+      background: var(--gold);
+      border-radius: 50%;
+      position: fixed; top:0; left:0;
+      pointer-events: none;
+      z-index: 99999;
+      transition: transform 0.15s ease, background 0.2s;
+      mix-blend-mode: difference;
+    }
+    .cursor-trail {
+      width: 38px; height: 38px;
+      border: 2px solid var(--gold);
+      border-radius: 50%;
+      position: fixed; top:0; left:0;
+      pointer-events: none;
+      z-index: 99998;
+      transition: transform 0.4s ease, opacity 0.3s;
+      opacity: 0.5;
+    }
+
+    /* ─── ANIMATED BG PARTICLES ─── */
+    #particles-canvas {
+      position: fixed; top:0; left:0;
+      width:100%; height:100%;
+      z-index: 0;
+      pointer-events:none;
+    }
+
+    /* ─── NAVBAR ─── */
+    .navbar {
+      position: fixed; width:100%; top:0; z-index: 1000;
+      padding: 18px 40px;
+      background: rgba(10,15,46,0.85);
+      backdrop-filter: blur(20px);
+      border-bottom: 1px solid var(--glass-border);
+      transition: all 0.4s ease;
+    }
+    .navbar.scrolled {
+      padding: 10px 40px;
+      background: rgba(10,15,46,0.98);
+      box-shadow: 0 4px 30px rgba(212,168,67,0.15);
+    }
+    .navbar-brand {
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: 2.2rem;
+      color: var(--gold) !important;
+      letter-spacing: 3px;
+      text-decoration: none;
+      position: relative;
+    }
+    .navbar-brand span { color: var(--white); }
+    .nav-link {
+      color: var(--white) !important;
+      font-weight: 500;
+      font-size: 0.9rem;
+      letter-spacing: 1.5px;
+      text-transform: uppercase;
+      margin: 0 8px;
+      position: relative;
+      transition: color 0.3s;
+    }
+    .nav-link::after {
+      content: '';
+      position: absolute; bottom: -4px; left:0;
+      width:0; height:2px;
+      background: var(--gold);
+      transition: width 0.3s ease;
+    }
+    .nav-link:hover { color: var(--gold) !important; }
+    .nav-link:hover::after { width: 100%; }
+    .nav-cta {
+      background: linear-gradient(135deg, var(--gold), var(--gold2));
+      color: var(--navy) !important;
+      padding: 8px 24px !important;
+      border-radius: 30px;
+      font-weight: 700 !important;
+      transition: transform 0.2s, box-shadow 0.3s !important;
+    }
+    .nav-cta:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 8px 25px rgba(212,168,67,0.5) !important;
+    }
+    .nav-cta::after { display:none; }
+
+    /* ─── HERO ─── */
+    #hero {
+      min-height: 100vh;
+      display: flex; align-items: center; justify-content: center;
+      position: relative;
+      overflow: hidden;
+      z-index: 1;
+    }
+    .hero-bg-shapes {
+      position: absolute; inset:0;
+      overflow:hidden;
+    }
+    .shape {
+      position: absolute;
+      border-radius: 50%;
+      filter: blur(80px);
+      animation: floatShape 8s ease-in-out infinite alternate;
+    }
+    .shape-1 { width:500px; height:500px; background:rgba(212,168,67,0.12); top:-100px; left:-150px; animation-duration:10s; }
+    .shape-2 { width:400px; height:400px; background:rgba(26,37,96,0.5); bottom:-100px; right:-100px; animation-duration:7s; animation-delay:2s; }
+    .shape-3 { width:250px; height:250px; background:rgba(212,168,67,0.08); top:40%; left:60%; animation-duration:12s; animation-delay:1s; }
+
+    @keyframes floatShape {
+      from { transform: translate(0,0) scale(1); }
+      to   { transform: translate(40px,30px) scale(1.1); }
+    }
+
+    .hero-content { position:relative; z-index:2; text-align:center; padding: 0 20px; }
+
+    .hero-badge {
+      display: inline-block;
+      background: var(--glass);
+      border: 1px solid var(--glass-border);
+      border-radius: 30px;
+      padding: 6px 20px;
+      font-size: 0.8rem;
+      letter-spacing: 3px;
+      text-transform: uppercase;
+      color: var(--gold);
+      margin-bottom: 24px;
+      animation: fadeDown 0.8s ease both;
+      backdrop-filter: blur(10px);
+    }
+    .hero-badge i { margin-right: 6px; animation: spin 3s linear infinite; display:inline-block; }
+
+    .hero-title {
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: clamp(4rem, 12vw, 10rem);
+      line-height: 0.92;
+      letter-spacing: 4px;
+      margin-bottom: 10px;
+      animation: fadeDown 0.8s 0.2s ease both;
+    }
+    .hero-title .line1 { display:block; color: var(--white); }
+    .hero-title .line2 {
+      display:block;
+      background: linear-gradient(90deg, var(--gold), var(--gold2), var(--gold));
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-size: 200%;
+      animation: shimmer 3s linear infinite, fadeDown 0.8s 0.3s ease both;
+    }
+
+    @keyframes shimmer { to { background-position: 200% center; } }
+
+    .hero-sub {
+      font-size: 1.1rem;
+      color: rgba(245,245,240,0.65);
+      max-width: 500px;
+      margin: 20px auto 40px;
+      line-height: 1.7;
+      animation: fadeDown 0.8s 0.5s ease both;
+    }
+
+    .hero-btns { animation: fadeDown 0.8s 0.7s ease both; display:flex; gap:16px; justify-content:center; flex-wrap:wrap; }
+
+    .btn-gold {
+      background: linear-gradient(135deg, var(--gold), var(--gold2));
+      color: var(--navy);
+      font-weight: 700;
+      padding: 14px 38px;
+      border-radius: 50px;
+      border: none;
+      font-size: 1rem;
+      letter-spacing: 1px;
+      text-decoration: none;
+      transition: transform 0.25s, box-shadow 0.3s;
+      display: inline-flex; align-items:center; gap:8px;
+      position: relative; overflow:hidden;
+    }
+    .btn-gold::before {
+      content:'';
+      position:absolute; inset:0;
+      background:linear-gradient(135deg, var(--gold2), var(--gold));
+      opacity:0;
+      transition:opacity 0.3s;
+    }
+    .btn-gold:hover { transform:translateY(-4px) scale(1.03); box-shadow:0 16px 40px rgba(212,168,67,0.5); }
+    .btn-gold:hover::before { opacity:1; }
+    .btn-gold span { position:relative; z-index:1; }
+
+    .btn-outline-gold {
+      background: transparent;
+      color: var(--gold);
+      border: 2px solid var(--gold);
+      padding: 12px 36px;
+      border-radius: 50px;
+      font-weight: 600;
+      font-size: 1rem;
+      letter-spacing: 1px;
+      text-decoration:none;
+      transition: all 0.3s;
+      display:inline-flex; align-items:center; gap:8px;
+    }
+    .btn-outline-gold:hover {
+      background: var(--gold);
+      color: var(--navy);
+      transform: translateY(-4px);
+      box-shadow: 0 12px 30px rgba(212,168,67,0.35);
+    }
+
+    .hero-stats {
+      display:flex; gap:50px; justify-content:center; flex-wrap:wrap;
+      margin-top: 70px;
+      animation: fadeUp 0.8s 1s ease both;
+    }
+    .stat-item { text-align:center; }
+    .stat-num {
+      font-family:'Bebas Neue', sans-serif;
+      font-size: 2.8rem;
+      color: var(--gold);
+      line-height:1;
+      display:block;
+    }
+    .stat-label { font-size:0.75rem; letter-spacing:2px; text-transform:uppercase; color:rgba(245,245,240,0.5); }
+
+    /* ─── SCROLL INDICATOR ─── */
+    .scroll-indicator {
+      position:absolute; bottom:30px; left:50%; transform:translateX(-50%);
+      display:flex; flex-direction:column; align-items:center; gap:8px;
+      animation: bounceDown 2s ease infinite;
+      z-index:2;
+      cursor: pointer;
+    }
+    .scroll-indicator span { font-size:0.7rem; letter-spacing:3px; text-transform:uppercase; color:rgba(245,245,240,0.4); }
+    .scroll-line { width:1px; height:50px; background:linear-gradient(to bottom, var(--gold), transparent); animation: lineGrow 2s ease infinite; }
+
+    @keyframes bounceDown { 0%,100%{transform:translateX(-50%) translateY(0)} 50%{transform:translateX(-50%) translateY(10px)} }
+    @keyframes lineGrow { 0%{transform:scaleY(0);transform-origin:top} 50%{transform:scaleY(1);transform-origin:top} 51%{transform:scaleY(1);transform-origin:bottom} 100%{transform:scaleY(0);transform-origin:bottom} }
+
+    /* ─── MARQUEE TICKER ─── */
+    .marquee-wrap {
+      background: linear-gradient(90deg, var(--gold), var(--gold2), var(--gold));
+      padding: 12px 0;
+      overflow:hidden;
+      position:relative; z-index:2;
+    }
+    .marquee-track {
+      display:flex; gap:0;
+      animation: marquee 20s linear infinite;
+      white-space: nowrap;
+    }
+    .marquee-track span {
+      font-family:'Bebas Neue',sans-serif;
+      font-size:1.1rem;
+      letter-spacing:3px;
+      color: var(--navy);
+      padding: 0 30px;
+    }
+    .marquee-track span i { margin-right:10px; }
+    @keyframes marquee { to { transform: translateX(-50%); } }
+
+    /* ─── SECTION COMMONS ─── */
+    section { position:relative; z-index:1; }
+    .section-label {
+      display:inline-block;
+      font-size:0.7rem;
+      letter-spacing:4px;
+      text-transform:uppercase;
+      color:var(--gold);
+      background: rgba(212,168,67,0.1);
+      border: 1px solid var(--glass-border);
+      border-radius:20px;
+      padding:4px 16px;
+      margin-bottom:16px;
+    }
+    .section-title {
+      font-family:'Bebas Neue',sans-serif;
+      font-size: clamp(2.5rem, 6vw, 5rem);
+      line-height:1;
+      letter-spacing:2px;
+    }
+    .section-title .gold { color:var(--gold); }
+    .section-divider {
+      width:60px; height:3px;
+      background:linear-gradient(90deg,var(--gold),var(--gold2));
+      border-radius:2px;
+      margin: 16px 0 24px;
+    }
+
+    /* ─── ABOUT ─── */
+    #about { padding: 120px 0; }
+    .about-card {
+      background: var(--glass);
+      border: 1px solid var(--glass-border);
+      border-radius: 24px;
+      padding: 40px;
+      backdrop-filter: blur(20px);
+      transition: transform 0.4s, box-shadow 0.4s;
+      height:100%;
+    }
+    .about-card:hover {
+      transform: translateY(-8px);
+      box-shadow: 0 24px 60px rgba(212,168,67,0.15);
+    }
+    .about-icon {
+      width:60px; height:60px;
+      background:linear-gradient(135deg,var(--gold),var(--gold2));
+      border-radius:16px;
+      display:flex; align-items:center; justify-content:center;
+      font-size:1.4rem; color:var(--navy);
+      margin-bottom:20px;
+    }
+    .about-img-wrap {
+      position:relative;
+      border-radius:24px;
+      overflow:hidden;
+    }
+    .about-img-placeholder {
+      width:100%; height:450px;
+      background: linear-gradient(135deg, #1a2560 0%, #0a0f2e 100%);
+      border-radius:24px;
+      display:flex; flex-direction:column; align-items:center; justify-content:center;
+      border: 1px solid var(--glass-border);
+      position:relative;
+      overflow:hidden;
+    }
+    .about-img-placeholder::before {
+      content:'';
+      position:absolute; inset:0;
+      background: repeating-linear-gradient(45deg, rgba(212,168,67,0.03) 0px, rgba(212,168,67,0.03) 1px, transparent 1px, transparent 20px);
+    }
+    .about-img-inner { position:relative; z-index:1; text-align:center; }
+    .about-img-inner i { font-size:5rem; color:var(--gold); opacity:0.6; }
+    .about-img-inner p { color:rgba(245,245,240,0.4); margin-top:12px; font-size:0.9rem; letter-spacing:2px; text-transform:uppercase; }
+
+    /* ─── PRODUCTS ─── */
+    #products { padding: 120px 0; background: rgba(26,37,96,0.15); }
+
+    /* FLIP CARDS */
+    .flip-card {
+      perspective: 1200px;
+      height: 280px;
+      cursor: pointer;
+    }
+    .flip-card-inner {
+      position:relative;
+      width:100%; height:100%;
+      transition: transform 0.7s cubic-bezier(0.4,0,0.2,1);
+      transform-style: preserve-3d;
+    }
+    .flip-card:hover .flip-card-inner { transform: rotateY(180deg); }
+    .flip-card-front, .flip-card-back {
+      position:absolute; inset:0;
+      border-radius:20px;
+      backface-visibility: hidden;
+      display:flex; flex-direction:column; align-items:center; justify-content:center;
+      padding:30px;
+    }
+    .flip-card-front {
+      background: var(--glass);
+      border: 1px solid var(--glass-border);
+      backdrop-filter: blur(20px);
+      transition: box-shadow 0.3s;
+    }
+    .flip-card:hover .flip-card-front { box-shadow:0 0 40px rgba(212,168,67,0.2); }
+    .flip-card-back {
+      background: linear-gradient(135deg, var(--gold) 0%, var(--gold2) 100%);
+      transform: rotateY(180deg);
+      color: var(--navy);
+    }
+    .fc-icon {
+      font-size:3rem; color:var(--gold);
+      margin-bottom:16px;
+      transition: transform 0.3s;
+    }
+    .flip-card:hover .fc-icon { transform:scale(1.1); }
+    .fc-title {
+      font-family:'Bebas Neue',sans-serif;
+      font-size:1.6rem; letter-spacing:2px; color:var(--white);
+    }
+    .fc-tag { font-size:0.75rem; color:rgba(245,245,240,0.5); letter-spacing:2px; text-transform:uppercase; margin-top:6px; }
+    .fc-back-icon { font-size:2.5rem; color:var(--navy); margin-bottom:12px; }
+    .fc-back-title { font-family:'Bebas Neue',sans-serif; font-size:1.8rem; letter-spacing:2px; color:var(--navy); }
+    .fc-back-desc { font-size:0.85rem; color:rgba(10,15,46,0.8); text-align:center; margin-top:8px; line-height:1.5; }
+
+    /* 3D CARD */
+    .card-3d-wrap {
+      perspective: 1000px;
+    }
+    .card-3d {
+      background: var(--glass);
+      border: 1px solid var(--glass-border);
+      backdrop-filter: blur(20px);
+      border-radius: 24px;
+      padding: 48px 40px;
+      transition: transform 0.1s ease, box-shadow 0.3s;
+      transform-style: preserve-3d;
+      position:relative;
+      overflow:hidden;
+    }
+    .card-3d::before {
+      content:'';
+      position:absolute; inset:0;
+      background:linear-gradient(135deg, rgba(212,168,67,0.05), transparent 60%);
+      border-radius:24px;
+    }
+    .card-3d-content { position:relative; z-index:1; }
+    .card-3d-glow {
+      position:absolute; inset:0; pointer-events:none;
+      background: radial-gradient(circle at var(--mx,50%) var(--my,50%), rgba(212,168,67,0.15), transparent 60%);
+      border-radius:24px;
+      opacity:0;
+      transition:opacity 0.3s;
+    }
+    .card-3d:hover .card-3d-glow { opacity:1; }
+
+    /* ─── WHY US ─── */
+    #why { padding:120px 0; }
+    .why-item {
+      display:flex; gap:20px; align-items:flex-start;
+      padding:30px;
+      background:var(--glass);
+      border:1px solid var(--glass-border);
+      border-radius:20px;
+      backdrop-filter:blur(15px);
+      transition:all 0.4s;
+      margin-bottom:20px;
+    }
+    .why-item:hover {
+      transform:translateX(10px);
+      border-color:var(--gold);
+      box-shadow:0 8px 30px rgba(212,168,67,0.15);
+    }
+    .why-num {
+      font-family:'Bebas Neue',sans-serif;
+      font-size:3rem;
+      color:var(--gold);
+      opacity:0.3;
+      line-height:1;
+      min-width:50px;
+    }
+    .why-text h5 { font-weight:700; font-size:1.1rem; color:var(--gold); margin-bottom:6px; }
+    .why-text p { color:rgba(245,245,240,0.6); font-size:0.9rem; line-height:1.6; margin:0; }
+
+    /* ─── FLOATING 3D UNIFORM ─── */
+    .uniform-3d {
+      width:280px; height:350px;
+      margin:0 auto;
+      position:relative;
+      animation: float3d 4s ease-in-out infinite;
+    }
+    @keyframes float3d {
+      0%,100% { transform:translateY(0) rotateY(0deg); }
+      25%      { transform:translateY(-15px) rotateY(5deg); }
+      75%      { transform:translateY(-8px) rotateY(-5deg); }
+    }
+    .uniform-svg { width:100%; height:100%; filter:drop-shadow(0 20px 40px rgba(212,168,67,0.3)); }
+
+    /* ─── FEEDBACK ─── */
+    #feedback { padding:120px 0; background:rgba(26,37,96,0.15); }
+    .feedback-form {
+      background:var(--glass);
+      border:1px solid var(--glass-border);
+      border-radius:24px;
+      padding:48px;
+      backdrop-filter:blur(20px);
+    }
+    .form-control, .form-select {
+      background: rgba(255,255,255,0.06) !important;
+      border:1px solid var(--glass-border) !important;
+      color:var(--white) !important;
+      border-radius:12px !important;
+      padding:14px 18px !important;
+      font-family:'Outfit',sans-serif !important;
+      transition:border-color 0.3s, box-shadow 0.3s !important;
+    }
+    .form-control:focus, .form-select:focus {
+      border-color:var(--gold) !important;
+      box-shadow:0 0 0 3px rgba(212,168,67,0.15) !important;
+      background:rgba(255,255,255,0.09) !important;
+    }
+    .form-control::placeholder { color:rgba(245,245,240,0.3) !important; }
+    .form-label { font-size:0.85rem; letter-spacing:1px; color:rgba(245,245,240,0.7); text-transform:uppercase; margin-bottom:8px; }
+    .star-rating { display:flex; gap:8px; flex-direction:row-reverse; justify-content:flex-end; }
+    .star-rating input { display:none; }
+    .star-rating label { font-size:2rem; color:rgba(245,245,240,0.2); cursor:pointer; transition:color 0.2s; }
+    .star-rating label:hover, .star-rating label:hover ~ label,
+    .star-rating input:checked ~ label { color:var(--gold); }
+
+    /* ─── CONTACT ─── */
+    #contact { padding:120px 0; }
+    .contact-card {
+      background:var(--glass);
+      border:1px solid var(--glass-border);
+      border-radius:24px;
+      padding:40px;
+      backdrop-filter:blur(20px);
+      height:100%;
+      transition:transform 0.4s, box-shadow 0.4s;
+    }
+    .contact-card:hover { transform:translateY(-6px); box-shadow:0 20px 50px rgba(212,168,67,0.12); }
+    .contact-icon {
+      width:50px; height:50px;
+      background:linear-gradient(135deg,var(--gold),var(--gold2));
+      border-radius:12px;
+      display:flex; align-items:center; justify-content:center;
+      font-size:1.2rem; color:var(--navy);
+      margin-bottom:16px;
+    }
+    .map-placeholder {
+      background:linear-gradient(135deg,#1a2560,#0a0f2e);
+      border:1px solid var(--glass-border);
+      border-radius:20px;
+      height:300px;
+      display:flex; flex-direction:column; align-items:center; justify-content:center;
+      position:relative; overflow:hidden;
+    }
+    .map-placeholder::before {
+      content:'';
+      position:absolute; inset:0;
+      background:repeating-linear-gradient(0deg,rgba(212,168,67,0.03) 0,rgba(212,168,67,0.03) 1px,transparent 1px,transparent 30px),
+                 repeating-linear-gradient(90deg,rgba(212,168,67,0.03) 0,rgba(212,168,67,0.03) 1px,transparent 1px,transparent 30px);
+    }
+    .map-pin { position:relative; z-index:1; text-align:center; animation:pinBounce 2s ease-in-out infinite; }
+    @keyframes pinBounce { 0%,100%{transform:translateY(0)} 50%{transform:translateY(-12px)} }
+    .map-pin i { font-size:3.5rem; color:var(--gold); }
+    .map-pin p { color:rgba(245,245,240,0.6); font-size:0.8rem; letter-spacing:2px; text-transform:uppercase; margin-top:10px; }
+
+    /* ─── OUTLETS ─── */
+    .outlet-card {
+      background:var(--glass);
+      border:1px solid var(--glass-border);
+      border-radius:16px;
+      padding:24px;
+      backdrop-filter:blur(15px);
+      transition:all 0.3s;
+    }
+    .outlet-card:hover { transform:translateY(-4px); border-color:var(--gold); box-shadow:0 12px 30px rgba(212,168,67,0.15); }
+    .outlet-num { font-family:'Bebas Neue',sans-serif; font-size:2.5rem; color:var(--gold); opacity:0.3; line-height:1; }
+
+    /* ─── FOOTER ─── */
+    footer {
+      background:rgba(5,8,24,0.95);
+      border-top:1px solid var(--glass-border);
+      padding:60px 0 30px;
+      position:relative;
+    }
+    footer::before {
+      content:'';
+      position:absolute; top:0; left:0; right:0; height:2px;
+      background:linear-gradient(90deg,transparent,var(--gold),var(--gold2),var(--gold),transparent);
+    }
+    .footer-brand {
+      font-family:'Bebas Neue',sans-serif;
+      font-size:2.5rem;
+      color:var(--gold);
+      letter-spacing:3px;
+    }
+    .footer-brand span { color:var(--white); }
+    .footer-link {
+      color:rgba(245,245,240,0.5);
+      text-decoration:none;
+      font-size:0.9rem;
+      transition:color 0.3s;
+      display:block; margin-bottom:10px;
+    }
+    .footer-link:hover { color:var(--gold); }
+    .social-btn {
+      width:44px; height:44px;
+      background:var(--glass);
+      border:1px solid var(--glass-border);
+      border-radius:50%;
+      display:inline-flex; align-items:center; justify-content:center;
+      color:var(--white);
+      text-decoration:none;
+      font-size:1rem;
+      transition:all 0.3s;
+      margin-right:8px;
+    }
+    .social-btn:hover { background:var(--gold); color:var(--navy); transform:translateY(-4px); border-color:var(--gold); }
+    .footer-divider { border-color:var(--glass-border); margin:30px 0; }
+    .footer-bottom { color:rgba(245,245,240,0.35); font-size:0.8rem; }
+    .footer-bottom span { color:var(--gold); }
+
+    /* ─── ANIMATED KEYFRAMES ─── */
+    @keyframes fadeDown { from{opacity:0;transform:translateY(-30px)} to{opacity:1;transform:translateY(0)} }
+    @keyframes fadeUp   { from{opacity:0;transform:translateY(30px)}  to{opacity:1;transform:translateY(0)} }
+    @keyframes fadeIn   { from{opacity:0} to{opacity:1} }
+    @keyframes spin     { to{transform:rotate(360deg)} }
+
+    /* ─── SCROLL REVEAL ─── */
+    .reveal {
+      opacity:0;
+      transform:translateY(40px);
+      transition:opacity 0.7s ease, transform 0.7s ease;
+    }
+    .reveal.visible {
+      opacity:1;
+      transform:translateY(0);
+    }
+    .reveal-left {
+      opacity:0; transform:translateX(-50px);
+      transition:opacity 0.7s ease, transform 0.7s ease;
+    }
+    .reveal-left.visible { opacity:1; transform:translateX(0); }
+    .reveal-right {
+      opacity:0; transform:translateX(50px);
+      transition:opacity 0.7s ease, transform 0.7s ease;
+    }
+    .reveal-right.visible { opacity:1; transform:translateX(0); }
+
+    .delay-1 { transition-delay:0.1s; }
+    .delay-2 { transition-delay:0.2s; }
+    .delay-3 { transition-delay:0.3s; }
+    .delay-4 { transition-delay:0.4s; }
+    .delay-5 { transition-delay:0.5s; }
+
+    /* ─── MOBILE ─── */
+    @media(max-width:768px){
+      .navbar { padding:14px 20px; }
+      .hero-stats { gap:30px; }
+      .stat-num { font-size:2rem; }
+    }
+
+    /* ─── LOADING SCREEN ─── */
+    #loader {
+      position:fixed; inset:0; z-index:999999;
+      background:var(--navy);
+      display:flex; flex-direction:column; align-items:center; justify-content:center;
+      transition:opacity 0.5s ease;
+    }
+    .loader-logo {
+      font-family:'Bebas Neue',sans-serif;
+      font-size:4rem; color:var(--gold); letter-spacing:5px;
+      animation:pulse 1s ease infinite alternate;
+    }
+    @keyframes pulse { from{opacity:0.4} to{opacity:1} }
+    .loader-bar-wrap { width:200px; height:3px; background:rgba(212,168,67,0.2); border-radius:2px; margin-top:20px; overflow:hidden; }
+    .loader-bar { height:100%; background:linear-gradient(90deg,var(--gold),var(--gold2)); width:0; animation:loadBar 1.5s ease forwards; }
+    @keyframes loadBar { to{width:100%} }
+
+    /* toast */
+    #toast {
+      position:fixed; bottom:30px; right:30px; z-index:9999;
+      background:linear-gradient(135deg,var(--gold),var(--gold2));
+      color:var(--navy);
+      padding:16px 28px;
+      border-radius:12px;
+      font-weight:700;
+      transform:translateY(80px);
+      opacity:0;
+      transition:all 0.4s;
+      box-shadow:0 10px 30px rgba(212,168,67,0.4);
+    }
+    #toast.show { transform:translateY(0); opacity:1; }
+
+    /* section bg deco */
+    .deco-circle {
+      position:absolute;
+      border-radius:50%;
+      border:1px solid rgba(212,168,67,0.08);
+      pointer-events:none;
+    }
+  </style>
+</head>
+<body>
+
+<!-- LOADER -->
+<div id="loader">
+  <div class="loader-logo">A1 <span style="color:#f5f5f0">UNIFORMS</span></div>
+  <div class="loader-bar-wrap"><div class="loader-bar"></div></div>
+  <p style="color:rgba(245,245,240,0.4);font-size:0.75rem;letter-spacing:3px;text-transform:uppercase;margin-top:16px;">Loading Excellence…</p>
+</div>
+
+<!-- CURSOR -->
+<div class="cursor" id="cursor"></div>
+<div class="cursor-trail" id="cursorTrail"></div>
+
+<!-- BACKGROUND CANVAS -->
+<canvas id="particles-canvas"></canvas>
+
+<!-- TOAST -->
+<div id="toast">✓ Message Sent Successfully!</div>
+
+<!-- ═══════════════════════════════
+     NAVBAR
+════════════════════════════════ -->
+<nav class="navbar navbar-expand-lg">
+  <div class="container-fluid px-4">
+    <a class="navbar-brand" href="#hero">A1 <span>UNIFORMS</span></a>
+    <button class="navbar-toggler border-0" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" style="color:var(--white);">
+      <i class="fas fa-bars"></i>
+    </button>
+    <div class="collapse navbar-collapse justify-content-end" id="navbarNav">
+      <ul class="navbar-nav align-items-center gap-1">
+        <li class="nav-item"><a class="nav-link" href="#hero">Home</a></li>
+        <li class="nav-item"><a class="nav-link" href="#about">About</a></li>
+        <li class="nav-item"><a class="nav-link" href="#products">Products</a></li>
+        <li class="nav-item"><a class="nav-link" href="#why">Why Us</a></li>
+        <li class="nav-item"><a class="nav-link" href="#feedback">Feedback</a></li>
+        <li class="nav-item"><a class="nav-link" href="#contact">Contact</a></li>
+        <li class="nav-item ms-2"><a class="nav-link nav-cta" href="#contact"><i class="fas fa-star me-1"></i>Get Quote</a></li>
+      </ul>
+    </div>
+  </div>
+</nav>
+
+<!-- ═══════════════════════════════
+     HERO
+════════════════════════════════ -->
+<section id="hero">
+  <div class="hero-bg-shapes">
+    <div class="shape shape-1"></div>
+    <div class="shape shape-2"></div>
+    <div class="shape shape-3"></div>
+  </div>
+
+  <!-- deco circles -->
+  <div class="deco-circle" style="width:600px;height:600px;top:50%;left:50%;transform:translate(-50%,-50%);animation:spin 30s linear infinite;"></div>
+  <div class="deco-circle" style="width:800px;height:800px;top:50%;left:50%;transform:translate(-50%,-50%);animation:spin 50s linear infinite reverse;"></div>
+
+  <div class="hero-content container">
+    <div class="hero-badge"><i class="fas fa-star"></i> Est. 2016 · Premium School Uniforms</div>
+    <h1 class="hero-title">
+      <span class="line1">DRESS TO</span>
+      <span class="line2">IMPRESS</span>
+    </h1>
+    <p class="hero-sub">Pakistan's most trusted school uniform manufacturer — crafting quality, comfort, and style for every child.</p>
+    <div class="hero-btns">
+      <a href="#products" class="btn-gold"><span><i class="fas fa-tshirt"></i> View Products</span></a>
+      <a href="#contact" class="btn-outline-gold"><i class="fas fa-phone-alt"></i> Get in Touch</a>
+    </div>
+    <div class="hero-stats">
+      <div class="stat-item">
+        <span class="stat-num" data-target="500">0</span>
+        <span class="stat-label">Schools Supplied</span>
+      </div>
+      <div class="stat-item">
+        <span class="stat-num" data-target="9">0</span>
+        <span class="stat-label">Years of Excellence</span>
+      </div>
+      <div class="stat-item">
+        <span class="stat-num" data-target="50000">0</span>
+        <span class="stat-label">Happy Students</span>
+      </div>
+      <div class="stat-item">
+        <span class="stat-num" data-target="10">0</span>
+        <span class="stat-label">Product Categories</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="scroll-indicator" onclick="document.getElementById('about').scrollIntoView({behavior:'smooth'})">
+    <span>Scroll</span>
+    <div class="scroll-line"></div>
+  </div>
+</section>
+
+<!-- MARQUEE -->
+<div class="marquee-wrap">
+  <div class="marquee-track" id="marqueeTrack">
+    <span><i class="fas fa-star"></i> Premium Quality</span>
+    <span><i class="fas fa-tshirt"></i> School Uniforms</span>
+    <span><i class="fas fa-medal"></i> Trusted Since 2016</span>
+    <span><i class="fas fa-check-circle"></i> Best Fit Guaranteed</span>
+    <span><i class="fas fa-palette"></i> Custom Designs</span>
+    <span><i class="fas fa-leaf"></i> Quality Textiles</span>
+    <span><i class="fas fa-users"></i> 500+ Schools</span>
+    <span><i class="fas fa-star"></i> Premium Quality</span>
+    <span><i class="fas fa-tshirt"></i> School Uniforms</span>
+    <span><i class="fas fa-medal"></i> Trusted Since 2016</span>
+    <span><i class="fas fa-check-circle"></i> Best Fit Guaranteed</span>
+    <span><i class="fas fa-palette"></i> Custom Designs</span>
+    <span><i class="fas fa-leaf"></i> Quality Textiles</span>
+    <span><i class="fas fa-users"></i> 500+ Schools</span>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════
+     ABOUT
+════════════════════════════════ -->
+<section id="about">
+  <div class="deco-circle" style="width:400px;height:400px;top:10%;right:-150px;animation:spin 40s linear infinite;"></div>
+  <div class="container">
+    <div class="row align-items-center g-5">
+      <div class="col-lg-5 reveal-left">
+        <div class="about-img-placeholder">
+          <div class="about-img-inner">
+            <!-- Inline SVG uniform illustration -->
+            <div class="uniform-3d">
+              <svg class="uniform-svg" viewBox="0 0 200 260" xmlns="http://www.w3.org/2000/svg">
+                <!-- Body -->
+                <rect x="60" y="80" width="80" height="120" rx="8" fill="#1a2560" stroke="#d4a843" stroke-width="1.5"/>
+                <!-- Collar -->
+                <polygon points="90,80 100,100 110,80" fill="#d4a843"/>
+                <polygon points="90,80 80,60 100,80" fill="#0a0f2e" stroke="#d4a843" stroke-width="1"/>
+                <polygon points="110,80 120,60 100,80" fill="#0a0f2e" stroke="#d4a843" stroke-width="1"/>
+                <!-- Left Sleeve -->
+                <rect x="30" y="80" width="32" height="55" rx="6" fill="#1a2560" stroke="#d4a843" stroke-width="1.5"/>
+                <!-- Right Sleeve -->
+                <rect x="138" y="80" width="32" height="55" rx="6" fill="#1a2560" stroke="#d4a843" stroke-width="1.5"/>
+                <!-- Buttons -->
+                <circle cx="100" cy="110" r="3" fill="#d4a843"/>
+                <circle cx="100" cy="125" r="3" fill="#d4a843"/>
+                <circle cx="100" cy="140" r="3" fill="#d4a843"/>
+                <!-- Pocket -->
+                <rect x="70" y="100" width="20" height="16" rx="3" fill="none" stroke="#d4a843" stroke-width="1"/>
+                <!-- Logo on pocket -->
+                <text x="80" y="112" font-size="8" fill="#d4a843" text-anchor="middle" font-weight="bold">A1</text>
+                <!-- Trousers -->
+                <rect x="60" y="195" width="35" height="55" rx="5" fill="#0d1540" stroke="#d4a843" stroke-width="1"/>
+                <rect x="105" y="195" width="35" height="55" rx="5" fill="#0d1540" stroke="#d4a843" stroke-width="1"/>
+                <!-- Belt -->
+                <rect x="60" y="190" width="80" height="10" rx="3" fill="#d4a843"/>
+                <rect x="95" y="190" width="10" height="10" rx="1" fill="#f0c96e"/>
+                <!-- Shine line on shirt -->
+                <line x1="75" y1="85" x2="75" y2="195" stroke="rgba(255,255,255,0.08)" stroke-width="6"/>
+              </svg>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="col-lg-7 reveal-right">
+        <div class="section-label">Who We Are</div>
+        <h2 class="section-title">CRAFTING <span class="gold">EXCELLENCE</span><br>SINCE 2016</h2>
+        <div class="section-divider"></div>
+        <p style="color:rgba(245,245,240,0.7);line-height:1.8;font-size:1.05rem;margin-bottom:30px;">
+          A-1 Uniforms was founded with a single mission — to dress every student in comfort, quality, and pride. From our very first stitch, we've been dedicated to understanding each client's unique vision and delivering uniforms that exceed expectations.
+        </p>
+        <div class="row g-3">
+          <div class="col-sm-6">
+            <div class="about-card reveal delay-1">
+              <div class="about-icon"><i class="fas fa-cut"></i></div>
+              <h6 style="font-weight:700;color:var(--gold);margin-bottom:6px;">Custom Tailoring</h6>
+              <p style="font-size:0.88rem;color:rgba(245,245,240,0.6);margin:0;line-height:1.6;">Each uniform made to exact measurements for a perfect, comfortable fit.</p>
+            </div>
+          </div>
+          <div class="col-sm-6">
+            <div class="about-card reveal delay-2">
+              <div class="about-icon"><i class="fas fa-gem"></i></div>
+              <h6 style="font-weight:700;color:var(--gold);margin-bottom:6px;">Premium Fabric</h6>
+              <p style="font-size:0.88rem;color:rgba(245,245,240,0.6);margin:0;line-height:1.6;">Only the finest quality textiles — durable, breathable, and long-lasting.</p>
+            </div>
+          </div>
+          <div class="col-sm-6">
+            <div class="about-card reveal delay-3">
+              <div class="about-icon"><i class="fas fa-lightbulb"></i></div>
+              <h6 style="font-weight:700;color:var(--gold);margin-bottom:6px;">Innovative Design</h6>
+              <p style="font-size:0.88rem;color:rgba(245,245,240,0.6);margin:0;line-height:1.6;">Fresh, creative designs tailored uniquely for every school's identity.</p>
+            </div>
+          </div>
+          <div class="col-sm-6">
+            <div class="about-card reveal delay-4">
+              <div class="about-icon"><i class="fas fa-handshake"></i></div>
+              <h6 style="font-weight:700;color:var(--gold);margin-bottom:6px;">Client-First Approach</h6>
+              <p style="font-size:0.88rem;color:rgba(245,245,240,0.6);margin:0;line-height:1.6;">Every client treated as a unique partner. Your vision, our craftsmanship.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════════════════════════
+     PRODUCTS
+════════════════════════════════ -->
+<section id="products">
+  <div class="deco-circle" style="width:300px;height:300px;bottom:5%;left:-100px;animation:spin 25s linear infinite;"></div>
+  <div class="container">
+    <div class="text-center mb-5 reveal">
+      <div class="section-label">Our Collection</div>
+      <h2 class="section-title">SCHOOL <span class="gold">UNIFORMS</span></h2>
+      <div class="section-divider mx-auto"></div>
+      <p style="color:rgba(245,245,240,0.6);max-width:500px;margin:0 auto;">Hover over each card to discover more about our premium product range</p>
+    </div>
+    <div class="row g-4">
+
+      <!-- FLIP CARDS x10 -->
+      <div class="col-6 col-md-4 col-lg-3 reveal delay-1">
+        <div class="flip-card">
+          <div class="flip-card-inner">
+            <div class="flip-card-front">
+              <i class="fas fa-tshirt fc-icon"></i>
+              <div class="fc-title">Shirts</div>
+              <div class="fc-tag">Boys & Girls</div>
+            </div>
+            <div class="flip-card-back">
+              <i class="fas fa-tshirt fc-back-icon"></i>
+              <div class="fc-back-title">Shirts</div>
+              <p class="fc-back-desc">Crisp, breathable school shirts for boys and girls in all standard sizes. Custom embroidery available.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="col-6 col-md-4 col-lg-3 reveal delay-2">
+        <div class="flip-card">
+          <div class="flip-card-inner">
+            <div class="flip-card-front">
+              <i class="fas fa-vest fc-icon"></i>
+              <div class="fc-title">Skirts</div>
+              <div class="fc-tag">Girls Uniform</div>
+            </div>
+            <div class="flip-card-back">
+              <i class="fas fa-vest fc-back-icon"></i>
+              <div class="fc-back-title">Skirts</div>
+              <p class="fc-back-desc">Elegant pleated and A-line skirts in school-approved colors with perfect hemlines.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="col-6 col-md-4 col-lg-3 reveal delay-3">
+        <div class="flip-card">
+          <div class="flip-card-inner">
+            <div class="flip-card-front">
+              <i class="fas fa-child fc-icon"></i>
+              <div class="fc-title">Frocks</div>
+              <div class="fc-tag">Girls Uniform</div>
+            </div>
+            <div class="flip-card-back">
+              <i class="fas fa-child fc-back-icon"></i>
+              <div class="fc-back-title">Frocks</div>
+              <p class="fc-back-desc">Beautifully stitched frocks for young girls, comfortable and school-appropriate with smart finishing.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="col-6 col-md-4 col-lg-3 reveal delay-4">
+        <div class="flip-card">
+          <div class="flip-card-inner">
+            <div class="flip-card-front">
+              <i class="fas fa-running fc-icon"></i>
+              <div class="fc-title">P.T. T-Shirts</div>
+              <div class="fc-tag">Sports Wear</div>
+            </div>
+            <div class="flip-card-back">
+              <i class="fas fa-running fc-back-icon"></i>
+              <div class="fc-back-title">P.T. T-Shirts</div>
+              <p class="fc-back-desc">Moisture-wicking, durable sports t-shirts designed for active students. Custom school colors & logos.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="col-6 col-md-4 col-lg-3 reveal delay-1">
+        <div class="flip-card">
+          <div class="flip-card-inner">
+            <div class="flip-card-front">
+              <i class="fas fa-socks fc-icon"></i>
+              <div class="fc-title">P.T. Shorts</div>
+              <div class="fc-tag">Sports Wear</div>
+            </div>
+            <div class="flip-card-back">
+              <i class="fas fa-socks fc-back-icon"></i>
+              <div class="fc-back-title">P.T. Shorts</div>
+              <p class="fc-back-desc">Lightweight, flexible sports shorts for physical education. Elastic waistband for all-day comfort.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="col-6 col-md-4 col-lg-3 reveal delay-2">
+        <div class="flip-card">
+          <div class="flip-card-inner">
+            <div class="flip-card-front">
+              <i class="fas fa-stream fc-icon"></i>
+              <div class="fc-title">Track Pants</div>
+              <div class="fc-tag">Sports Wear</div>
+            </div>
+            <div class="flip-card-back">
+              <i class="fas fa-stream fc-back-icon"></i>
+              <div class="fc-back-title">Track Pants</div>
+              <p class="fc-back-desc">Full-length P.T. track pants in premium sportswear fabric. Durable stitching for active movement.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="col-6 col-md-4 col-lg-3 reveal delay-3">
+        <div class="flip-card">
+          <div class="flip-card-inner">
+            <div class="flip-card-front">
+              <i class="fas fa-minus fc-icon"></i>
+              <div class="fc-title">Belts</div>
+              <div class="fc-tag">Accessories</div>
+            </div>
+            <div class="flip-card-back">
+              <i class="fas fa-minus fc-back-icon"></i>
+              <div class="fc-back-title">Belts</div>
+              <p class="fc-back-desc">Smart school belts in leather and fabric — polished buckles, adjustable sizes, school colors available.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="col-6 col-md-4 col-lg-3 reveal delay-4">
+        <div class="flip-card">
+          <div class="flip-card-inner">
+            <div class="flip-card-front">
+              <i class="fas fa-crown fc-icon"></i>
+              <div class="fc-title">Ties</div>
+              <div class="fc-tag">Accessories</div>
+            </div>
+            <div class="flip-card-back">
+              <i class="fas fa-crown fc-back-icon"></i>
+              <div class="fc-back-title">Ties</div>
+              <p class="fc-back-desc">Classic school ties with house colors and stripes. Pre-tied and traditional knot options available.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="col-6 col-md-4 col-lg-3 reveal delay-1">
+        <div class="flip-card">
+          <div class="flip-card-inner">
+            <div class="flip-card-front">
+              <i class="fas fa-certificate fc-icon"></i>
+              <div class="fc-title">Logos</div>
+              <div class="fc-tag">Embroidery</div>
+            </div>
+            <div class="flip-card-back">
+              <i class="fas fa-certificate fc-back-icon"></i>
+              <div class="fc-back-title">Logos</div>
+              <p class="fc-back-desc">High-quality embroidered and printed school logos on any garment. Precision stitching guaranteed.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="col-6 col-md-4 col-lg-3 reveal delay-2">
+        <div class="flip-card">
+          <div class="flip-card-inner">
+            <div class="flip-card-front">
+              <i class="fas fa-shoe-prints fc-icon"></i>
+              <div class="fc-title">Socks</div>
+              <div class="fc-tag">Accessories</div>
+            </div>
+            <div class="flip-card-back">
+              <i class="fas fa-shoe-prints fc-back-icon"></i>
+              <div class="fc-back-title">Socks</div>
+              <p class="fc-back-desc">Comfortable cotton school socks in various lengths and colors. School-branded options available.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 3D featured card -->
+    <div class="row mt-5 justify-content-center">
+      <div class="col-lg-8 reveal">
+        <div class="card-3d-wrap" id="card3dWrap">
+          <div class="card-3d" id="card3d">
+            <div class="card-3d-glow" id="card3dGlow"></div>
+            <div class="card-3d-content text-center">
+              <div class="section-label mb-3">Special Offer</div>
+              <h3 style="font-family:'Bebas Neue',sans-serif;font-size:2.5rem;letter-spacing:2px;color:var(--gold);">BULK ORDER DISCOUNTS</h3>
+              <p style="color:rgba(245,245,240,0.65);max-width:500px;margin:16px auto;line-height:1.7;">
+                Order uniforms for your entire school and get exclusive pricing. We handle everything from measurement to delivery — hassle-free!
+              </p>
+              <div class="d-flex gap-3 justify-content-center flex-wrap mt-3">
+                <div style="text-align:center;padding:20px 30px;background:rgba(212,168,67,0.1);border:1px solid var(--glass-border);border-radius:16px;">
+                  <div style="font-family:'Bebas Neue';font-size:2rem;color:var(--gold);">50+</div>
+                  <div style="font-size:0.75rem;color:rgba(245,245,240,0.5);letter-spacing:2px;text-transform:uppercase;">Units — 10% off</div>
+                </div>
+                <div style="text-align:center;padding:20px 30px;background:rgba(212,168,67,0.1);border:1px solid var(--glass-border);border-radius:16px;">
+                  <div style="font-family:'Bebas Neue';font-size:2rem;color:var(--gold);">200+</div>
+                  <div style="font-size:0.75rem;color:rgba(245,245,240,0.5);letter-spacing:2px;text-transform:uppercase;">Units — 20% off</div>
+                </div>
+                <div style="text-align:center;padding:20px 30px;background:rgba(212,168,67,0.1);border:1px solid var(--glass-border);border-radius:16px;">
+                  <div style="font-family:'Bebas Neue';font-size:2rem;color:var(--gold);">500+</div>
+                  <div style="font-size:0.75rem;color:rgba(245,245,240,0.5);letter-spacing:2px;text-transform:uppercase;">Units — 30% off</div>
+                </div>
+              </div>
+              <a href="#contact" class="btn-gold mt-4 d-inline-flex" style="margin-top:24px;">
+                <span><i class="fas fa-envelope me-2"></i> Request Bulk Quote</span>
+              </a>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════════════════════════
+     WHY US
+════════════════════════════════ -->
+<section id="why">
+  <div class="container">
+    <div class="row align-items-center g-5">
+      <div class="col-lg-6 reveal-left">
+        <div class="section-label">Why Choose Us</div>
+        <h2 class="section-title">THE A1 <span class="gold">ADVANTAGE</span></h2>
+        <div class="section-divider"></div>
+        <div class="why-item">
+          <div class="why-num">01</div>
+          <div class="why-text">
+            <h5><i class="fas fa-medal me-2"></i>Unmatched Quality</h5>
+            <p>Every garment is inspected for quality before delivery. We use only certified fabrics that are durable, comfortable, and school-approved.</p>
+          </div>
+        </div>
+        <div class="why-item">
+          <div class="why-num">02</div>
+          <div class="why-text">
+            <h5><i class="fas fa-dollar-sign me-2"></i>Affordable Pricing</h5>
+            <p>Premium uniforms shouldn't break the bank. We offer the best value in the market with no hidden costs — transparent, honest pricing.</p>
+          </div>
+        </div>
+        <div class="why-item">
+          <div class="why-num">03</div>
+          <div class="why-text">
+            <h5><i class="fas fa-truck me-2"></i>On-Time Delivery</h5>
+            <p>We respect your school's schedule. Our efficient production ensures bulk orders are delivered on time, every time — before the school term starts.</p>
+          </div>
+        </div>
+        <div class="why-item">
+          <div class="why-num">04</div>
+          <div class="why-text">
+            <h5><i class="fas fa-paint-brush me-2"></i>Custom Branding</h5>
+            <p>From embroidered logos to custom color combinations — we bring your school's identity to life on every uniform.</p>
+          </div>
+        </div>
+      </div>
+      <div class="col-lg-6 reveal-right">
+        <!-- animated stats ring -->
+        <div class="text-center">
+          <div style="position:relative;display:inline-block;">
+            <canvas id="ringChart" width="320" height="320"></canvas>
+            <div style="position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);text-align:center;">
+              <div style="font-family:'Bebas Neue';font-size:3rem;color:var(--gold);line-height:1;">98%</div>
+              <div style="font-size:0.75rem;letter-spacing:2px;text-transform:uppercase;color:rgba(245,245,240,0.5);">Satisfaction</div>
+            </div>
+          </div>
+          <div class="d-flex justify-content-center gap-4 mt-3 flex-wrap">
+            <div class="d-flex align-items-center gap-2"><div style="width:12px;height:12px;border-radius:50%;background:#d4a843;"></div><span style="font-size:0.8rem;color:rgba(245,245,240,0.6);">Quality</span></div>
+            <div class="d-flex align-items-center gap-2"><div style="width:12px;height:12px;border-radius:50%;background:#1a2560;"></div><span style="font-size:0.8rem;color:rgba(245,245,240,0.6);">Delivery</span></div>
+            <div class="d-flex align-items-center gap-2"><div style="width:12px;height:12px;border-radius:50%;background:#f0c96e;"></div><span style="font-size:0.8rem;color:rgba(245,245,240,0.6);">Pricing</span></div>
+            <div class="d-flex align-items-center gap-2"><div style="width:12px;height:12px;border-radius:50%;background:#2e3f8a;"></div><span style="font-size:0.8rem;color:rgba(245,245,240,0.6);">Design</span></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════════════════════════
+     FEEDBACK
+════════════════════════════════ -->
+<section id="feedback">
+  <div class="container">
+    <div class="row justify-content-center">
+      <div class="col-lg-8">
+        <div class="text-center mb-5 reveal">
+          <div class="section-label">Your Voice Matters</div>
+          <h2 class="section-title">SHARE YOUR <span class="gold">FEEDBACK</span></h2>
+          <div class="section-divider mx-auto"></div>
+          <p style="color:rgba(245,245,240,0.6);">We value every client's experience and continuously improve based on your feedback.</p>
+        </div>
+        <div class="feedback-form reveal">
+          <form id="feedbackForm">
+            <div class="row g-3">
+              <div class="col-sm-6">
+                <label class="form-label">Full Name</label>
+                <input type="text" class="form-control" placeholder="Your full name" required/>
+              </div>
+              <div class="col-sm-6">
+                <label class="form-label">Email Address</label>
+                <input type="email" class="form-control" placeholder="your@email.com" required/>
+              </div>
+              <div class="col-12">
+                <label class="form-label">School / Institution</label>
+                <input type="text" class="form-control" placeholder="School name"/>
+              </div>
+              <div class="col-sm-6">
+                <label class="form-label">Product Category</label>
+                <select class="form-select">
+                  <option value="">Select product…</option>
+                  <option>Shirts</option>
+                  <option>Skirts</option>
+                  <option>Frocks</option>
+                  <option>P.T. T-Shirts</option>
+                  <option>P.T. Shorts</option>
+                  <option>Track Pants</option>
+                  <option>Belts</option>
+                  <option>Ties</option>
+                  <option>Logos</option>
+                  <option>Socks</option>
+                </select>
+              </div>
+              <div class="col-sm-6">
+                <label class="form-label">Overall Rating</label>
+                <div class="star-rating">
+                  <input type="radio" id="s5" name="rating" value="5"/><label for="s5"><i class="fas fa-star"></i></label>
+                  <input type="radio" id="s4" name="rating" value="4"/><label for="s4"><i class="fas fa-star"></i></label>
+                  <input type="radio" id="s3" name="rating" value="3"/><label for="s3"><i class="fas fa-star"></i></label>
+                  <input type="radio" id="s2" name="rating" value="2"/><label for="s2"><i class="fas fa-star"></i></label>
+                  <input type="radio" id="s1" name="rating" value="1"/><label for="s1"><i class="fas fa-star"></i></label>
+                </div>
+              </div>
+              <div class="col-12">
+                <label class="form-label">Your Feedback</label>
+                <textarea class="form-control" rows="4" placeholder="Tell us about your experience with A1 Uniforms…" required></textarea>
+              </div>
+              <div class="col-12 text-center mt-2">
+                <button type="submit" class="btn-gold" style="border:none;cursor:pointer;">
+                  <span><i class="fas fa-paper-plane me-2"></i>Submit Feedback</span>
+                </button>
+              </div>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════════════════════════
+     CONTACT
+════════════════════════════════ -->
+<section id="contact">
+  <div class="deco-circle" style="width:350px;height:350px;top:10%;right:-100px;animation:spin 35s linear infinite;"></div>
+  <div class="container">
+    <div class="text-center mb-5 reveal">
+      <div class="section-label">Get In Touch</div>
+      <h2 class="section-title">CONTACT <span class="gold">US</span></h2>
+      <div class="section-divider mx-auto"></div>
+    </div>
+
+    <div class="row g-4 mb-5">
+      <div class="col-md-4 reveal delay-1">
+        <div class="contact-card">
+          <div class="contact-icon"><i class="fas fa-map-marker-alt"></i></div>
+          <h6 style="font-weight:700;color:var(--gold);margin-bottom:8px;font-size:0.85rem;letter-spacing:2px;text-transform:uppercase;">Head Office</h6>
+          <p style="color:rgba(245,245,240,0.65);font-size:0.9rem;line-height:1.7;margin:0;">
+            Shop #12, Uniform Market,<br>
+            Main Boulevard, Karachi,<br>
+            Sindh, Pakistan
+          </p>
+        </div>
+      </div>
+      <div class="col-md-4 reveal delay-2">
+        <div class="contact-card text-center">
+          <div class="contact-icon mx-auto"><i class="fas fa-phone-alt"></i></div>
+          <h6 style="font-weight:700;color:var(--gold);margin-bottom:8px;font-size:0.85rem;letter-spacing:2px;text-transform:uppercase;">Call Us</h6>
+          <p style="color:rgba(245,245,240,0.65);font-size:0.9rem;line-height:1.8;margin:0;">
+            +92 300 000 0000<br>
+            +92 021 000 0000
+          </p>
+        </div>
+      </div>
+      <div class="col-md-4 reveal delay-3">
+        <div class="contact-card text-center">
+          <div class="contact-icon mx-auto"><i class="fas fa-envelope"></i></div>
+          <h6 style="font-weight:700;color:var(--gold);margin-bottom:8px;font-size:0.85rem;letter-spacing:2px;text-transform:uppercase;">Email Us</h6>
+          <p style="color:rgba(245,245,240,0.65);font-size:0.9rem;line-height:1.8;margin:0;">
+            <a href="mailto:info@a1uniforms.com" style="color:var(--gold);text-decoration:none;">info@a1uniforms.com</a><br>
+            <a href="mailto:orders@a1uniforms.com" style="color:rgba(245,245,240,0.65);text-decoration:none;font-size:0.85rem;">orders@a1uniforms.com</a>
+          </p>
+        </div>
+      </div>
+    </div>
+
+    <!-- MAP PLACEHOLDER -->
+    <div class="row mb-5 reveal">
+      <div class="col-12">
+        <div class="map-placeholder">
+          <div class="map-pin">
+            <i class="fas fa-map-marker-alt"></i>
+            <p>A1 Uniforms HQ · Karachi, Pakistan</p>
+          </div>
+          <!-- map grid overlay -->
+          <div style="position:absolute;inset:0;display:grid;grid-template-columns:repeat(8,1fr);grid-template-rows:repeat(4,1fr);pointer-events:none;">
+            <!-- decorative dots -->
+          </div>
+          <div style="position:absolute;bottom:20px;right:20px;font-size:0.75rem;color:rgba(245,245,240,0.3);letter-spacing:2px;text-transform:uppercase;">
+            <i class="fas fa-location-arrow me-1"></i>Enable location for Google Maps
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- OUTLETS -->
+    <div class="reveal">
+      <h4 style="font-family:'Bebas Neue';font-size:2rem;letter-spacing:2px;color:var(--gold);margin-bottom:24px;">
+        <i class="fas fa-store me-2"></i>Our City Outlets
+      </h4>
+      <div class="row g-3">
+        <div class="col-sm-6 col-lg-3">
+          <div class="outlet-card">
+            <div class="outlet-num">01</div>
+            <h6 style="color:var(--gold);font-weight:700;margin:4px 0;">Saddar Branch</h6>
+            <p style="font-size:0.82rem;color:rgba(245,245,240,0.55);margin:0;line-height:1.6;">Shop 5, Saddar Market<br>Karachi · 021-XXX-XXXX</p>
+          </div>
+        </div>
+        <div class="col-sm-6 col-lg-3">
+          <div class="outlet-card">
+            <div class="outlet-num">02</div>
+            <h6 style="color:var(--gold);font-weight:700;margin:4px 0;">Gulshan Branch</h6>
+            <p style="font-size:0.82rem;color:rgba(245,245,240,0.55);margin:0;line-height:1.6;">Block 7, Gulshan-e-Iqbal<br>Karachi · 021-XXX-XXXX</p>
+          </div>
+        </div>
+        <div class="col-sm-6 col-lg-3">
+          <div class="outlet-card">
+            <div class="outlet-num">03</div>
+            <h6 style="color:var(--gold);font-weight:700;margin:4px 0;">North Nazimabad</h6>
+            <p style="font-size:0.82rem;color:rgba(245,245,240,0.55);margin:0;line-height:1.6;">Block 10, North Nazimabad<br>Karachi · 021-XXX-XXXX</p>
+          </div>
+        </div>
+        <div class="col-sm-6 col-lg-3">
+          <div class="outlet-card">
+            <div class="outlet-num">04</div>
+            <h6 style="color:var(--gold);font-weight:700;margin:4px 0;">DHA Branch</h6>
+            <p style="font-size:0.82rem;color:rgba(245,245,240,0.55);margin:0;line-height:1.6;">Phase 5, DHA<br>Karachi · 021-XXX-XXXX</p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- CONTACT FORM -->
+    <div class="row mt-5 justify-content-center">
+      <div class="col-lg-8 reveal">
+        <div class="feedback-form">
+          <h4 style="font-family:'Bebas Neue';font-size:1.8rem;letter-spacing:2px;color:var(--gold);margin-bottom:24px;"><i class="fas fa-envelope-open-text me-2"></i>Send Us a Message</h4>
+          <form id="contactForm">
+            <div class="row g-3">
+              <div class="col-sm-6">
+                <label class="form-label">Full Name</label>
+                <input type="text" class="form-control" placeholder="Your name" required/>
+              </div>
+              <div class="col-sm-6">
+                <label class="form-label">Phone Number</label>
+                <input type="tel" class="form-control" placeholder="+92 300 000 0000"/>
+              </div>
+              <div class="col-12">
+                <label class="form-label">Subject</label>
+                <input type="text" class="form-control" placeholder="Uniform inquiry, bulk order…" required/>
+              </div>
+              <div class="col-12">
+                <label class="form-label">Message</label>
+                <textarea class="form-control" rows="4" placeholder="Tell us how we can help you…" required></textarea>
+              </div>
+              <div class="col-12">
+                <button type="submit" class="btn-gold" style="border:none;cursor:pointer;">
+                  <span><i class="fas fa-paper-plane me-2"></i>Send Message</span>
+                </button>
+              </div>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════════════════════════
+     FOOTER
+════════════════════════════════ -->
+<footer>
+  <div class="container">
+    <div class="row g-4">
+      <div class="col-lg-4">
+        <div class="footer-brand">A1 <span>UNIFORMS</span></div>
+        <p style="color:rgba(245,245,240,0.5);font-size:0.9rem;margin:16px 0;line-height:1.7;max-width:280px;">Crafting excellence in school uniforms since 2016. Quality, comfort, and pride — stitched into every garment.</p>
+        <div>
+          <a href="#" class="social-btn"><i class="fab fa-facebook-f"></i></a>
+          <a href="#" class="social-btn"><i class="fab fa-instagram"></i></a>
+          <a href="#" class="social-btn"><i class="fab fa-whatsapp"></i></a>
+          <a href="#" class="social-btn"><i class="fab fa-linkedin-in"></i></a>
+        </div>
+      </div>
+      <div class="col-sm-4 col-lg-2">
+        <h6 style="font-weight:700;color:var(--gold);font-size:0.8rem;letter-spacing:2px;text-transform:uppercase;margin-bottom:16px;">Navigation</h6>
+        <a href="#hero" class="footer-link">Home</a>
+        <a href="#about" class="footer-link">About Us</a>
+        <a href="#products" class="footer-link">Products</a>
+        <a href="#why" class="footer-link">Why Choose Us</a>
+        <a href="#feedback" class="footer-link">Feedback</a>
+        <a href="#contact" class="footer-link">Contact</a>
+      </div>
+      <div class="col-sm-4 col-lg-3">
+        <h6 style="font-weight:700;color:var(--gold);font-size:0.8rem;letter-spacing:2px;text-transform:uppercase;margin-bottom:16px;">Products</h6>
+        <a href="#products" class="footer-link">Shirts &amp; Skirts</a>
+        <a href="#products" class="footer-link">Frocks</a>
+        <a href="#products" class="footer-link">P.T. Sportswear</a>
+        <a href="#products" class="footer-link">Belts &amp; Ties</a>
+        <a href="#products" class="footer-link">Logos &amp; Embroidery</a>
+        <a href="#products" class="footer-link">Socks</a>
+      </div>
+      <div class="col-sm-4 col-lg-3">
+        <h6 style="font-weight:700;color:var(--gold);font-size:0.8rem;letter-spacing:2px;text-transform:uppercase;margin-bottom:16px;">Contact Info</h6>
+        <p style="color:rgba(245,245,240,0.5);font-size:0.85rem;line-height:1.8;margin:0;">
+          <i class="fas fa-map-marker-alt me-2" style="color:var(--gold);"></i>Karachi, Sindh, Pakistan<br>
+          <i class="fas fa-phone-alt me-2" style="color:var(--gold);"></i>+92 300 000 0000<br>
+          <i class="fas fa-envelope me-2" style="color:var(--gold);"></i>info@a1uniforms.com<br>
+          <i class="fas fa-clock me-2" style="color:var(--gold);"></i>Mon–Sat: 9am – 7pm
+        </p>
+      </div>
+    </div>
+    <hr class="footer-divider"/>
+    <div class="d-flex justify-content-between align-items-center flex-wrap gap-3 footer-bottom">
+      <div>© 2025 <span>A1 Uniforms</span>. All rights reserved. | Website by <span>eProject Team</span></div>
+      <div>Made with <span style="color:#e25;">♥</span> in Pakistan</div>
+    </div>
+  </div>
+</footer>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.2/js/bootstrap.bundle.min.js"></script>
+<script>
+/* ─── LOADER ─── */
+window.addEventListener('load', () => {
+  setTimeout(() => {
+    const loader = document.getElementById('loader');
+    loader.style.opacity = '0';
+    setTimeout(() => loader.style.display = 'none', 500);
+  }, 1800);
+});
+
+/* ─── CURSOR ─── */
+const cursor = document.getElementById('cursor');
+const trail = document.getElementById('cursorTrail');
+let mx = 0, my = 0;
+document.addEventListener('mousemove', e => {
+  mx = e.clientX; my = e.clientY;
+  cursor.style.transform = `translate(${mx - 9}px, ${my - 9}px)`;
+  setTimeout(() => {
+    trail.style.transform = `translate(${mx - 19}px, ${my - 19}px)`;
+  }, 80);
+});
+document.querySelectorAll('a, button, .flip-card, .btn-gold, .btn-outline-gold').forEach(el => {
+  el.addEventListener('mouseenter', () => { cursor.style.transform += ' scale(1.8)'; trail.style.opacity = '0.9'; });
+  el.addEventListener('mouseleave', () => { trail.style.opacity = '0.5'; });
+});
+
+/* ─── PARTICLES ─── */
+const canvas = document.getElementById('particles-canvas');
+const ctx = canvas.getContext('2d');
+canvas.width = window.innerWidth;
+canvas.height = window.innerHeight;
+window.addEventListener('resize', () => { canvas.width = window.innerWidth; canvas.height = window.innerHeight; });
+
+const particles = [];
+for (let i = 0; i < 80; i++) {
+  particles.push({
+    x: Math.random() * canvas.width,
+    y: Math.random() * canvas.height,
+    r: Math.random() * 2 + 0.5,
+    vx: (Math.random() - 0.5) * 0.4,
+    vy: (Math.random() - 0.5) * 0.4,
+    alpha: Math.random() * 0.5 + 0.1,
+    gold: Math.random() > 0.5
+  });
+}
+
+function drawParticles() {
+  ctx.clearRect(0, 0, canvas.width, canvas.height);
+  particles.forEach(p => {
+    p.x += p.vx; p.y += p.vy;
+    if (p.x < 0) p.x = canvas.width;
+    if (p.x > canvas.width) p.x = 0;
+    if (p.y < 0) p.y = canvas.height;
+    if (p.y > canvas.height) p.y = 0;
+    ctx.beginPath();
+    ctx.arc(p.x, p.y, p.r, 0, Math.PI * 2);
+    ctx.fillStyle = p.gold ? `rgba(212,168,67,${p.alpha})` : `rgba(255,255,255,${p.alpha * 0.4})`;
+    ctx.fill();
+  });
+  // lines between close particles
+  for (let i = 0; i < particles.length; i++) {
+    for (let j = i + 1; j < particles.length; j++) {
+      const dx = particles[i].x - particles[j].x;
+      const dy = particles[i].y - particles[j].y;
+      const dist = Math.sqrt(dx*dx + dy*dy);
+      if (dist < 100) {
+        ctx.beginPath();
+        ctx.moveTo(particles[i].x, particles[i].y);
+        ctx.lineTo(particles[j].x, particles[j].y);
+        ctx.strokeStyle = `rgba(212,168,67,${0.05 * (1 - dist/100)})`;
+        ctx.lineWidth = 0.5;
+        ctx.stroke();
+      }
+    }
+  }
+  requestAnimationFrame(drawParticles);
+}
+drawParticles();
+
+/* ─── NAVBAR SCROLL ─── */
+window.addEventListener('scroll', () => {
+  document.querySelector('.navbar').classList.toggle('scrolled', window.scrollY > 50);
+});
+
+/* ─── SCROLL REVEAL ─── */
+const revealEls = document.querySelectorAll('.reveal, .reveal-left, .reveal-right');
+const revealObserver = new IntersectionObserver((entries) => {
+  entries.forEach(e => { if (e.isIntersecting) { e.target.classList.add('visible'); } });
+}, { threshold: 0.12 });
+revealEls.forEach(el => revealObserver.observe(el));
+
+/* ─── COUNT UP ─── */
+const counters = document.querySelectorAll('.stat-num[data-target]');
+const countObserver = new IntersectionObserver(entries => {
+  entries.forEach(e => {
+    if (e.isIntersecting) {
+      const el = e.target;
+      const target = +el.dataset.target;
+      const duration = 2000;
+      const step = target / (duration / 16);
+      let current = 0;
+      const timer = setInterval(() => {
+        current += step;
+        if (current >= target) { current = target; clearInterval(timer); }
+        el.textContent = target > 1000 ? Math.floor(current).toLocaleString() : Math.floor(current);
+      }, 16);
+      countObserver.unobserve(el);
+    }
+  });
+}, { threshold: 0.5 });
+counters.forEach(c => countObserver.observe(c));
+
+/* ─── 3D CARD MOUSE TILT ─── */
+const card3d = document.getElementById('card3d');
+const card3dWrap = document.getElementById('card3dWrap');
+const glow = document.getElementById('card3dGlow');
+if (card3dWrap) {
+  card3dWrap.addEventListener('mousemove', e => {
+    const rect = card3d.getBoundingClientRect();
+    const x = e.clientX - rect.left;
+    const y = e.clientY - rect.top;
+    const cx = rect.width / 2;
+    const cy = rect.height / 2;
+    const rotX = (y - cy) / cy * -12;
+    const rotY = (x - cx) / cx * 12;
+    card3d.style.transform = `rotateX(${rotX}deg) rotateY(${rotY}deg) scale(1.02)`;
+    card3d.style.boxShadow = `${-rotY}px ${rotX}px 50px rgba(212,168,67,0.2)`;
+    glow.style.setProperty('--mx', `${(x / rect.width) * 100}%`);
+    glow.style.setProperty('--my', `${(y / rect.height) * 100}%`);
+  });
+  card3dWrap.addEventListener('mouseleave', () => {
+    card3d.style.transform = '';
+    card3d.style.boxShadow = '';
+  });
+}
+
+/* ─── RING CHART ─── */
+const ringCanvas = document.getElementById('ringChart');
+if (ringCanvas) {
+  const rc = ringCanvas.getContext('2d');
+  const cx = 160, cy = 160, rad = 120, lw = 28;
+  const segments = [
+    { pct: 0.98, color: '#d4a843', label: 'Quality' },
+    { pct: 0.95, color: '#1a2560', label: 'Delivery' },
+    { pct: 0.92, color: '#f0c96e', label: 'Pricing' },
+    { pct: 0.88, color: '#2e3f8a', label: 'Design' },
+  ];
+  let animProg = 0;
+  function drawRing(prog) {
+    rc.clearRect(0, 0, 320, 320);
+    // bg ring
+    rc.beginPath(); rc.arc(cx,cy,rad,0,Math.PI*2);
+    rc.strokeStyle = 'rgba(212,168,67,0.08)'; rc.lineWidth = lw; rc.stroke();
+    // segments
+    const gap = 0.12;
+    const total = segments.length;
+    const anglePerSeg = (Math.PI * 2 - gap * total) / total;
+    segments.forEach((seg, i) => {
+      const start = -Math.PI/2 + i * (anglePerSeg + gap);
+      const end = start + anglePerSeg * seg.pct * prog;
+      rc.beginPath();
+      rc.arc(cx, cy, rad, start, end);
+      rc.strokeStyle = seg.color;
+      rc.lineWidth = lw;
+      rc.lineCap = 'round';
+      rc.stroke();
+    });
+  }
+  let ringStarted = false;
+  const ringObs = new IntersectionObserver(entries => {
+    if (entries[0].isIntersecting && !ringStarted) {
+      ringStarted = true;
+      const anim = () => {
+        animProg += 0.015;
+        drawRing(Math.min(animProg, 1));
+        if (animProg < 1) requestAnimationFrame(anim);
+      };
+      anim();
+    }
+  }, { threshold: 0.3 });
+  ringObs.observe(ringCanvas);
+  drawRing(0);
+}
+
+/* ─── FORMS ─── */
+function showToast() {
+  const t = document.getElementById('toast');
+  t.classList.add('show');
+  setTimeout(() => t.classList.remove('show'), 3500);
+}
+document.getElementById('feedbackForm').addEventListener('submit', e => { e.preventDefault(); showToast(); e.target.reset(); });
+document.getElementById('contactForm').addEventListener('submit', e => { e.preventDefault(); showToast(); e.target.reset(); });
+</script>
+</body>
+</html>
